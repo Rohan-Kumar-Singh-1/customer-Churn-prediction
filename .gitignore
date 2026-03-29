@@ -10,3 +10,4 @@ touch tests/
 .vscode/
 *.Zone.Identifier
 churn.ipynb
+*.csv
