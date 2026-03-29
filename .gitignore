@@ -9,3 +9,4 @@ touch tests/
 .pytest_cache/
 .vscode/
 *.Zone.Identifier
+churn.ipynb
