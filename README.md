@@ -1,46 +1,44 @@
-#  Customer Churn Prediction (MLOps Project)
+# 🚀 Customer Churn Prediction (End-to-End MLOps Project)
 
-##  Overview
+## 📌 Overview
 
-This project builds an end-to-end **Machine Learning system** to predict whether a customer is likely to churn.
-It uses a **Deep Artificial Neural Network (ANN)** trained on structured tabular data and is deployed using **FastAPI** with full **MLOps practices** including testing and CI/CD.
+This project builds a **production-style Machine Learning system** to predict customer churn using structured tabular data.
+
+It combines:
+
+* 🧠 **Deep Learning (ANN)**
+* ⚙️ **Data Engineering Pipelines**
+* 🌐 **API Deployment (FastAPI)**
+* 🧪 **Automated Testing (pytest)**
+* 🔁 **CI/CD (GitHub Actions)**
+
+👉 Designed to demonstrate **real-world MLOps practices**, not just model training.
 
 ---
 
-##  Objectives
+## 🎯 Objectives
 
 * Predict customer churn (binary classification)
-* Build a deep learning model for tabular data
-* Apply proper preprocessing pipelines
-* Deploy model using FastAPI
-* Implement unit testing with pytest
-* Automate testing using CI/CD (GitHub Actions)
+* Build a robust ANN model for tabular data
+* Design reusable preprocessing pipelines
+* Deploy model via REST API
+* Ensure reliability with unit testing
+* Automate workflows using CI/CD
 
 ---
 
-##  Model Details
+## 🧠 Model Architecture
 
-* Architecture: Feedforward Artificial Neural Network (ANN)
-* Layers: Dense + Dropout (for regularization)
-* Output: Sigmoid (binary classification)
-* Loss: Binary Crossentropy
-* Optimizer: Adam
-
----
-
-## Evaluation Metrics
-
-* Accuracy
-* Precision
-* Recall
-* F1-Score
-* Confusion Matrix
-
-The model is optimized to balance **precision and recall**, ensuring effective detection of churn customers.
+* **Type:** Feedforward Artificial Neural Network (ANN)
+* **Layers:** Dense + Dropout (regularization)
+* **Output Layer:** Sigmoid (probability output)
+* **Loss Function:** Binary Crossentropy
+* **Optimizer:** Adam
+* **Regularization:** Dropout + L2
 
 ---
 
-## Tech Stack
+## ⚙️ Tech Stack
 
 * Python
 * TensorFlow / Keras
@@ -52,18 +50,18 @@ The model is optimized to balance **precision and recall**, ensuring effective d
 
 ---
 
-##  Project Structure
+## 📂 Project Structure
 
 ```
-churn-ann/
+customer-churn-prediction/
 │
 ├── src/
-│   ├── preprocessing.py
-│   ├── model.py
-│   ├── train.py
+│   ├── preprocessing.py      # Data pipelines
+│   ├── model.py              # ANN architecture
+│   ├── train.py              # Training script
 │
 ├── api/
-│   └── main.py
+│   └── main.py               # FastAPI app
 │
 ├── tests/
 │   ├── test_preprocessing.py
@@ -74,59 +72,60 @@ churn-ann/
 │   ├── model.keras
 │   ├── preprocessor.pkl
 │
-├── .github/workflows/main.yml
+├── .github/workflows/main.yml   # CI pipeline
 ├── requirements.txt
 └── README.md
 ```
 
 ---
 
-##  Workflow
+## 🔄 Workflow
 
-1. Data preprocessing using pipelines (imputation + encoding + scaling)
-2. Model training with dropout and early stopping
-3. Evaluation using F1-score and confusion matrix
-4. Model saving and loading
-5. API deployment using FastAPI
-6. Automated testing using pytest
-7. CI/CD pipeline using GitHub Actions
+1. 📥 Load dataset (CSV)
+2. 🧹 Preprocess data:
+
+   * Missing value imputation
+   * One-hot encoding
+   * Feature scaling
+3. 🧠 Train ANN with:
+
+   * Dropout
+   * Early stopping
+   * Class weights (imbalance handling)
+4. 📊 Evaluate model (F1-score, confusion matrix)
+5. 💾 Save model + preprocessor
+6. 🌐 Serve via FastAPI
+7. 🧪 Run unit tests
+8. 🔁 Automate using CI/CD
 
 ---
 
-## ▶️ How to Run the Project
+## 🚀 Getting Started
 
 ### 1️⃣ Clone the repository
 
-```
+```bash
 git clone https://github.com/<your-username>/customer-Churn-prediction.git
 cd customer-Churn-prediction
 ```
 
----
-
 ### 2️⃣ Install dependencies
 
-```
+```bash
 pip install -r requirements.txt
 ```
 
----
-
 ### 3️⃣ Train the model
 
-```
+```bash
 python -m src.train
 ```
 
----
-
 ### 4️⃣ Run the API
 
-```
+```bash
 uvicorn api.main:app --reload
 ```
-
----
 
 ### 5️⃣ Open Swagger UI
 
@@ -136,17 +135,23 @@ http://127.0.0.1:8000/docs
 
 ---
 
-##  Running Tests
+## 🧪 Running Tests
 
-```
+```bash
 PYTHONPATH=. pytest
 ```
 
+✔ Tests include:
+
+* Data preprocessing validation
+* Model output shape
+* API response check
+
 ---
 
-##  API Endpoint
+## 🌐 API Endpoint
 
-### POST `/predict`
+### 🔹 POST `/predict`
 
 #### Sample Input:
 
@@ -187,19 +192,62 @@ PYTHONPATH=. pytest
 
 ---
 
-##  CI/CD Pipeline
+## 🔁 CI/CD Pipeline
 
-* Automated testing using GitHub Actions
-* Runs pytest on every push and pull request
-* Ensures code quality and reliability
+* Triggered on every push & pull request
+* Installs dependencies
+* Runs all unit tests
+* Ensures code reliability
+
+👉 Final pipeline shows **successful execution (green status)**
 
 ---
 
-## Key Learnings
+## 📂 Dataset
+
+* **Source:** Telco Customer Churn Dataset
+* **Rows:** ~7000
+* **Features:** 20+
+* **Target:** Churn (Yes/No)
+
+---
+
+## 🤔 Why ANN?
+
+Although tree-based models are common for tabular data, ANN was used to:
+
+* Capture complex non-linear relationships
+* Demonstrate deep learning capabilities
+* Apply regularization techniques (Dropout, L2)
+* Showcase scalable ML system design
+
+---
+
+## 🚀 Future Improvements
+
+* 🐳 Add Docker for containerization
+* 📦 Implement model versioning
+* 📈 Hyperparameter tuning
+* 📊 Add monitoring & logging
+* ☁️ Deploy on cloud (AWS / Render)
+
+---
+
+## 📚 Key Learnings
 
 * Building ANN models for tabular data
 * Handling class imbalance using class weights
-* Preventing overfitting with dropout and regularization
-* Designing scalable ML pipelines
+* Preventing overfitting with dropout
+* Designing modular ML pipelines
 * Deploying ML models as APIs
 * Implementing CI/CD for ML systems
+
+---
+
+## 👨‍💻 Author
+
+**Rohan Kumar**
+
+---
+
+⭐ If you found this project useful, consider giving it a star!
