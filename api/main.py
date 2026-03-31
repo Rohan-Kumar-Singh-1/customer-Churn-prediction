@@ -10,17 +10,31 @@ from tensorflow.keras.models import load_model
 
 app = FastAPI()
 
-# 🔥 Handle CI environment
-if os.getenv("CI") == "true":
+# -------------------------------
+# 🔧 Environment-based loading
+# -------------------------------
+IS_CI = os.getenv("CI") == "true"
+
+if IS_CI:
     model = None
     preprocessor = None
 else:
-    model = load_model("models/model.keras")
-    preprocessor = joblib.load("models/preprocessor.pkl")
+    try:
+        model = load_model("models/model.keras")
+        preprocessor = joblib.load("models/preprocessor.pkl")
+    except Exception as e:
+        # Fail fast in production if model is missing
+        raise RuntimeError(f"Model or preprocessor failed to load: {e}")
 
-THRESHOLD = 0.6
+# -------------------------------
+# 🎯 Thresholds (EXPLICIT DESIGN)
+# -------------------------------
+THRESHOLD = 0.6          # Final classification threshold
+RISK_THRESHOLD = 0.5     # Early warning threshold
 
-
+# -------------------------------
+# 📥 Input Schema
+# -------------------------------
 class ChurnInput(BaseModel):
     gender: str
     SeniorCitizen: int
@@ -42,19 +56,24 @@ class ChurnInput(BaseModel):
     MonthlyCharges: float
     TotalCharges: float
 
-
+# -------------------------------
+# 🏠 Health Check
+# -------------------------------
 @app.get("/")
 def home():
     return {"message": "Churn Prediction API is running 🚀"}
 
-
+# -------------------------------
+# 🔮 Prediction Endpoint
+# -------------------------------
 @app.post("/predict")
 def predict(data: ChurnInput):
-    # ✅ Convert input to DataFrame
+
+    # Convert input → DataFrame
     df = pd.DataFrame([data.model_dump()])
 
-    # 🔥 CI mode → skip model
-    if preprocessor is None or model is None:
+    # CI mode → return mock response
+    if IS_CI:
         return {
             "probability": 0.5,
             "prediction": 0,
@@ -62,14 +81,27 @@ def predict(data: ChurnInput):
             "risk_level": "Low Risk"
         }
 
-    # ✅ Normal prediction
+    # Safety check (production)
+    if model is None or preprocessor is None:
+        raise RuntimeError("Model or preprocessor not loaded properly")
+
+    # Preprocess input
     X = preprocessor.transform(df)
+
+    # Model prediction
     prob = model.predict(X)[0][0]
 
+    # -------------------------------
+    # 🎯 Decision Logic
+    # -------------------------------
     prediction = int(prob > THRESHOLD)
 
-    risk = "High Risk" if prob > 0.5 else "Low Risk"
+    # Early warning system (intentional design)
+    risk = "High Risk" if prob > RISK_THRESHOLD else "Low Risk"
 
+    # -------------------------------
+    # 📤 Response
+    # -------------------------------
     return {
         "probability": float(prob),
         "prediction": prediction,
