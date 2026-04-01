@@ -10,8 +10,17 @@ from tensorflow.keras.models import load_model
 
 app = FastAPI()
 
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # -------------------------------
-# 🔧 Environment-based loading
+#  Environment-based loading
 # -------------------------------
 IS_CI = os.getenv("CI") == "true"
 
@@ -27,13 +36,13 @@ else:
         raise RuntimeError(f"Model or preprocessor failed to load: {e}")
 
 # -------------------------------
-# 🎯 Thresholds (EXPLICIT DESIGN)
+#  Thresholds (EXPLICIT DESIGN)
 # -------------------------------
 THRESHOLD = 0.6          # Final classification threshold
 RISK_THRESHOLD = 0.5     # Early warning threshold
 
 # -------------------------------
-# 📥 Input Schema
+#  Input Schema
 # -------------------------------
 class ChurnInput(BaseModel):
     gender: str
@@ -57,14 +66,14 @@ class ChurnInput(BaseModel):
     TotalCharges: float
 
 # -------------------------------
-# 🏠 Health Check
+#  Health Check
 # -------------------------------
 @app.get("/")
 def home():
     return {"message": "Churn Prediction API is running 🚀"}
 
 # -------------------------------
-# 🔮 Prediction Endpoint
+#  Prediction Endpoint
 # -------------------------------
 @app.post("/predict")
 def predict(data: ChurnInput):
@@ -92,7 +101,7 @@ def predict(data: ChurnInput):
     prob = model.predict(X)[0][0]
 
     # -------------------------------
-    # 🎯 Decision Logic
+    #  Decision Logic
     # -------------------------------
     prediction = int(prob > THRESHOLD)
 
@@ -100,7 +109,7 @@ def predict(data: ChurnInput):
     risk = "High Risk" if prob > RISK_THRESHOLD else "Low Risk"
 
     # -------------------------------
-    # 📤 Response
+    #  Response
     # -------------------------------
     return {
         "probability": float(prob),
