@@ -17,12 +17,15 @@ jobs:
       with:
         python-version: "3.10"
 
+    # ✅ FIXED PATH
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
+        pip install -r api/requirements.txt
 
+    # ✅ FIXED PYTHONPATH (important for imports)
     - name: Set PYTHONPATH
       run: echo "PYTHONPATH=." >> $GITHUB_ENV
 
+    # ✅ Run tests
     - name: Run tests
       run: pytest
