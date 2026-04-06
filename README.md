@@ -1,14 +1,16 @@
-# 🚀 Customer Churn Prediction (End-to-End MLOps Project)
+# 🚀 Customer Churn Prediction (Full-Stack MLOps System)
 
 ## 📌 Overview
 
-This project builds a **production-style Machine Learning system** to predict customer churn using structured tabular data.
+This project is a **production-style end-to-end Machine Learning system** for predicting customer churn using structured tabular data.
 
 It combines:
 
 * 🧠 **Deep Learning (ANN)**
 * ⚙️ **Data Engineering Pipelines**
 * 🌐 **API Deployment (FastAPI)**
+* 🎨 **React Frontend Dashboard (Visualization)**
+* 🐳 **Dockerized Deployment (Full-stack)**
 * 🧪 **Automated Testing (pytest)**
 * 🔁 **CI/CD (GitHub Actions)**
 
@@ -21,7 +23,7 @@ It combines:
 * Predict customer churn (binary classification)
 * Build a robust ANN model for tabular data
 * Design reusable preprocessing pipelines
-* Deploy model via REST API
+* Deploy model via REST API with a React frontend
 * Ensure reliability with unit testing
 * Automate workflows using CI/CD
 
@@ -40,13 +42,22 @@ It combines:
 
 ## ⚙️ Tech Stack
 
+### Backend:
 * Python
+* FastAPI
 * TensorFlow / Keras
 * Scikit-learn
 * Pandas / NumPy
-* FastAPI
-* Pytest
+
+### Frontend:
+* React.js
+* Vite
+* SVG (custom gauge visualization)
+
+### DevOps / MLOps:
+* Docker & Docker Compose
 * GitHub Actions (CI/CD)
+* Pytest
 
 ---
 
@@ -58,22 +69,34 @@ customer-churn-prediction/
 ├── src/
 │   ├── preprocessing.py      # Data pipelines
 │   ├── model.py              # ANN architecture
-│   ├── train.py              # Training script
+│   └── train.py              # Training script
 │
 ├── api/
-│   └── main.py               # FastAPI app
+│   ├── main.py               # FastAPI app
+│   ├── model.py
+│   ├── preprocessing.py
+│   └── requirements.txt
 │
-├── tests/
+├── frontend/                 # React frontend
+│   ├── src/
+│   └── public/
+│
+├── models/                   # Saved ML artifacts
+│   ├── model.keras
+│   └── preprocessor.pkl
+│
+├── plots/                    # Training plots & visualizations
+│
+├── tests/                    # Unit tests
 │   ├── test_preprocessing.py
 │   ├── test_model.py
-│   ├── test_api.py
+│   └── test_api.py
 │
-├── models/
-│   ├── model.keras
-│   ├── preprocessor.pkl
-│
-├── .github/workflows/main.yml   # CI pipeline
-├── requirements.txt
+├── .github/workflows/        # CI/CD pipeline
+├── Dockerfile.backend
+├── Dockerfile.frontend
+├── docker-compose.yml
+├── threshold.pkl
 └── README.md
 ```
 
@@ -83,36 +106,47 @@ customer-churn-prediction/
 
 1. 📥 Load dataset (CSV)
 2. 🧹 Preprocess data:
-
    * Missing value imputation
    * One-hot encoding
    * Feature scaling
 3. 🧠 Train ANN with:
-
    * Dropout
    * Early stopping
    * Class weights (imbalance handling)
 4. 📊 Evaluate model (F1-score, confusion matrix)
-5. 💾 Save model + preprocessor
+5. 💾 Save model + preprocessor + optimal threshold
 6. 🌐 Serve via FastAPI
-7. 🧪 Run unit tests
-8. 🔁 Automate using CI/CD
+7. 🎨 Visualize via React dashboard
+8. 🧪 Run unit tests
+9. 🔁 Automate using CI/CD
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Run with Docker (Recommended)
+
+```bash
+docker compose up --build
+```
+
+### 🌍 Access:
+* Frontend → http://localhost:3000
+* Backend → http://localhost:8000
+
+---
+
+## ⚙️ Run Locally (Without Docker)
 
 ### 1️⃣ Clone the repository
 
 ```bash
-git clone https://github.com/<your-username>/customer-Churn-prediction.git
+git clone https://github.com/Rohan-Kumar-Singh-1/customer-Churn-prediction.git
 cd customer-Churn-prediction
 ```
 
 ### 2️⃣ Install dependencies
 
 ```bash
-pip install -r requirements.txt
+pip install -r api/requirements.txt
 ```
 
 ### 3️⃣ Train the model
@@ -133,19 +167,13 @@ uvicorn api.main:app --reload
 http://127.0.0.1:8000/docs
 ```
 
----
-
-## 🧪 Running Tests
+### 6️⃣ Run frontend
 
 ```bash
-PYTHONPATH=. pytest
+cd frontend
+npm install
+npm run dev
 ```
-
-✔ Tests include:
-
-* Data preprocessing validation
-* Model output shape
-* API response check
 
 ---
 
@@ -192,6 +220,19 @@ PYTHONPATH=. pytest
 
 ---
 
+## 🧪 Running Tests
+
+```bash
+PYTHONPATH=. pytest
+```
+
+✔ Tests include:
+* Data preprocessing validation
+* Model output shape
+* API response check
+
+---
+
 ## 🔁 CI/CD Pipeline
 
 * Triggered on every push & pull request
@@ -199,22 +240,22 @@ PYTHONPATH=. pytest
 * Runs all unit tests
 * Ensures code reliability
 
-👉 Final pipeline shows **successful execution (green status)**
+👉 Pipeline status visible in GitHub Actions (green ✅)
 
 ---
 
-## 📂 Dataset
+## 📊 Dataset
 
 * **Source:** Telco Customer Churn Dataset
 * **Rows:** ~7000
 * **Features:** 20+
-* **Target:** Churn (Yes/No)
+* **Target:** Churn (Yes / No)
 
 ---
 
 ## 🤔 Why ANN?
 
-Although tree-based models are common for tabular data, ANN was used to:
+Although tree-based models are common for tabular data, ANN was chosen to:
 
 * Capture complex non-linear relationships
 * Demonstrate deep learning capabilities
@@ -225,11 +266,12 @@ Although tree-based models are common for tabular data, ANN was used to:
 
 ## 🚀 Future Improvements
 
-* 🐳 Add Docker for containerization
-* 📦 Implement model versioning
-* 📈 Hyperparameter tuning
-* 📊 Add monitoring & logging
-* ☁️ Deploy on cloud (AWS / Render)
+* 📈 Model explainability (SHAP)
+* 📦 Model versioning (MLflow)
+* 📊 Monitoring & logging
+* ☁️ Cloud deployment (AWS / Render)
+* 🔐 Authentication layer
+* 🔁 Hyperparameter tuning
 
 ---
 
@@ -237,9 +279,11 @@ Although tree-based models are common for tabular data, ANN was used to:
 
 * Building ANN models for tabular data
 * Handling class imbalance using class weights
-* Preventing overfitting with dropout
+* Preventing overfitting with Dropout + L2
 * Designing modular ML pipelines
-* Deploying ML models as APIs
+* Deploying ML models as REST APIs
+* Frontend-backend integration with React
+* Docker-based containerization
 * Implementing CI/CD for ML systems
 
 ---
