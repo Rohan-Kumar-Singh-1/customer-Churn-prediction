@@ -1,13 +1,61 @@
+# ----------------------
+# Python
+# ----------------------
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.log
+
 env/
 venv/
 .venv/
-touch api/
-touch src/
-touch tests/
+
 .pytest_cache/
-.vscode/
-*.Zone.Identifier
-churn.ipynb
+.coverage
+
+# ----------------------
+# ML Models (VERY IMPORTANT)
+# ----------------------
+#models/*.keras
+#models/*.pkl
+#.pkl
+
+# ----------------------
+# Data files
+# ----------------------
 *.csv
+*.xlsx
+
+# ----------------------
+# Jupyter
+# ----------------------
+*.ipynb
+
+# ----------------------
+# Node / React
+# ----------------------
+node_modules/
+dist/
+build/
+
+# ----------------------
+# Environment variables
+# ----------------------
+.env
+
+# ----------------------
+# IDE / OS
+# ----------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ----------------------
+# Docker
+# ----------------------
+*.log
+docker-compose.override.yml

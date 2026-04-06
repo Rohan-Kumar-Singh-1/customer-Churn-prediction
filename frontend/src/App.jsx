@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_URL = "http://localhost:8000/predict";
+const API_URL = "http://backend:8000/predict";
 
 const defaultForm = {
   gender: "Male",
@@ -73,48 +73,91 @@ const sections = [
   },
 ];
 
-function GaugeArc({ prob }) {
-  const r = 70;
+function FullGauge({ prob }) {
   const cx = 100;
-  const cy = 95;
-  const startAngle = Math.PI;
-  const endAngle = 0;
-  const angle = startAngle + (1 - prob) * (endAngle - startAngle + Math.PI * 2 % (Math.PI * 2));
-  const correctedAngle = startAngle + prob * Math.PI;
+  const cy = 100;
+  const r = 80;
 
-  const arcX = cx + r * Math.cos(correctedAngle);
-  const arcY = cy + r * Math.sin(correctedAngle);
+  const angle = prob * 360;
 
-  const bgStart = { x: cx + r * Math.cos(startAngle), y: cy + r * Math.sin(startAngle) };
-  const bgEnd = { x: cx + r * Math.cos(endAngle), y: cy + r * Math.sin(endAngle) };
+  const rad = (angle - 90) * (Math.PI / 180);
 
-  const fgEnd = { x: arcX, y: arcY };
-  const largeArc = prob > 0.5 ? 1 : 0;
-
-  const color = prob > 0.6 ? "#ef4444" : prob > 0.4 ? "#f59e0b" : "#10b981";
+  const needleX = cx + r * 0.8 * Math.cos(rad);
+  const needleY = cy + r * 0.8 * Math.sin(rad);
 
   return (
-    <svg viewBox="0 0 200 100" style={{ width: "100%", maxWidth: 220 }}>
-      <path
-        d={`M ${bgStart.x} ${bgStart.y} A ${r} ${r} 0 0 1 ${bgEnd.x} ${bgEnd.y}`}
-        fill="none" stroke="#e5e7eb" strokeWidth="12" strokeLinecap="round"
+    <svg viewBox="0 0 200 200" style={{ width: "100%", maxWidth: 240 }}>
+
+      {/* Gradient */}
+      <defs>
+        <linearGradient id="riskGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#10b981" />
+          <stop offset="50%" stopColor="#f59e0b" />
+          <stop offset="100%" stopColor="#ef4444" />
+        </linearGradient>
+      </defs>
+
+      {/* Background circle */}
+      <circle
+        cx={cx}
+        cy={cy}
+        r={r}
+        stroke="#e5e7eb"
+        strokeWidth="12"
+        fill="none"
       />
-      {prob > 0 && (
-        <path
-          d={`M ${bgStart.x} ${bgStart.y} A ${r} ${r} 0 ${largeArc} 1 ${fgEnd.x} ${fgEnd.y}`}
-          fill="none" stroke={color} strokeWidth="12" strokeLinecap="round"
-          style={{ transition: "all 0.6s ease" }}
-        />
-      )}
-      <text x={cx} y={cy - 10} textAnchor="middle" fontSize="22" fontWeight="700"
-        fill={color} style={{ transition: "fill 0.6s ease" }}>
+
+      {/* Progress */}
+      <circle
+        cx={cx}
+        cy={cy}
+        r={r}
+        stroke="url(#riskGradient)"
+        strokeWidth="12"
+        fill="none"
+        strokeDasharray={2 * Math.PI * r}
+        strokeDashoffset={(1 - prob) * 2 * Math.PI * r}
+        strokeLinecap="round"
+        transform={`rotate(-90 ${cx} ${cy})`}
+        style={{ transition: "stroke-dashoffset 0.8s ease" }}
+      />
+
+      {/* Needle */}
+      <line
+        x1={cx}
+        y1={cy}
+        x2={needleX}
+        y2={needleY}
+        stroke="#111827"
+        strokeWidth="3"
+        strokeLinecap="round"
+        style={{ transition: "all 0.8s ease" }}
+      />
+
+      {/* Needle center */}
+      <circle cx={cx} cy={cy} r="5" fill="#111827" />
+
+      {/* Text */}
+      <text
+        x={cx}
+        y={cy - 10}
+        textAnchor="middle"
+        fontSize="20"
+        fontWeight="700"
+        fill="#111827"
+      >
         {(prob * 100).toFixed(1)}%
       </text>
-      <text x={cx} y={cy + 8} textAnchor="middle" fontSize="10" fill="#9ca3af">
-        churn probability
+
+      <text
+        x={cx}
+        y={cy + 14}
+        textAnchor="middle"
+        fontSize="11"
+        fill="#6b7280"
+      >
+        churn risk
       </text>
-      <text x="28" y={cy + 22} fontSize="9" fill="#9ca3af">0%</text>
-      <text x="160" y={cy + 22} fontSize="9" fill="#9ca3af">100%</text>
     </svg>
   );
 }
@@ -283,7 +326,7 @@ export default function ChurnPredictor() {
               <div className="result-pulse">
                 {/* Gauge */}
                 <div style={{ display: "flex", justifyContent: "center", marginBottom: 10 }}>
-                  <GaugeArc prob={result.probability} />
+                  <FullGauge prob={result.probability} />
                 </div>
 
                 {/* Label Badge */}
