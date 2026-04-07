@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const API_URL = "http://backend:8000/predict";
+const API_URL = "https://customer-churn-prediction-2nnf.onrender.com/predict";
 
 const defaultForm = {
   gender: "Male",
